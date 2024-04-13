@@ -6,7 +6,9 @@ const mm = require('music-metadata');
 
 const app = express();
 const upload = multer({ dest: 'uploads/' });
-const client = new speech.SpeechClient();
+const client = new speech.SpeechClient({
+  credentials: JSON.parse(Buffer.from(process.env.GOOGLE_APPLICATION_CREDENTIALS_BASE64, 'base64').toString('ascii'))
+});
 
 app.use(express.static('public'));
 

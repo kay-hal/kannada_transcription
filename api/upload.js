@@ -12,8 +12,9 @@ module.exports = async (req, res) => {
     const file = files.audio.path;
     const audioBytes = fs.readFileSync(file).toString('base64');
 
-    const client = new speech.SpeechClient();
-    // {
+    const client = new speech.SpeechClient({
+      credentials: JSON.parse(Buffer.from(process.env.GOOGLE_APPLICATION_CREDENTIALS_BASE64, 'base64').toString('ascii'))
+    });    // {
     //   keyFilename: 'path-to-your-google-api-key.json' // Ensure this is securely configured
     // });
 
