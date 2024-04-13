@@ -31,12 +31,18 @@
         document.getElementById('uploadForm').onsubmit = async function(event) {
             event.preventDefault();
             const formData = new FormData(event.target);
-            const response = await fetch('/api/upload', {
-                method: 'POST',
-                body: formData,
-            });
-            const result = await response.json();
-            document.getElementById('transcription').textContent = result.transcription;
+            const transcriptionElement = document.getElementById('transcription');
+            transcriptionElement.textContent = 'Transcribing...';
+            try {
+                const response = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData,
+                });
+                const result = await response.json();
+                transcriptionElement.textContent = result.transcription;
+            } catch (error) {
+                transcriptionElement.textContent = 'Error transcribing audio';
+            }
         };
     </script>
 </body>
