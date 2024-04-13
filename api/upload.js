@@ -36,10 +36,13 @@ module.exports = async (req, res) => {
     const extension = path.extname(originalFilename);
     // const audioBytes = fs.readFileSync(file).toString('base64');
 
-    const client = new speech.SpeechClient({
-      credentials: JSON.parse(Buffer.from(process.env.GOOGLE_APPLICATION_CREDENTIALS_BASE64, 'base64').toString('ascii'))
-    });    
-    
+    // const client = new speech.SpeechClient({
+    //   credentials: JSON.parse(Buffer.from(process.env.GOOGLE_APPLICATION_CREDENTIALS_BASE64, 'base64').toString('ascii'))
+    // });    
+    const credentials = JSON.parse(Buffer.from(process.env.GOOGLE_APPLICATION_CREDENTIALS_BASE64, 'base64').toString('ascii'));
+    console.log(credentials);
+    const client = new speech.SpeechClient({ credentials });
+        
     const metadata = await mm.parseFile(file);
     const sampleRateHertz = metadata.format.sampleRate;
     const codec = metadata.format.codec;
