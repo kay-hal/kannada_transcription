@@ -5,10 +5,9 @@ const formidable = require('formidable-serverless');
 const mm = require('music-metadata');
 
 const bucketName = 'kannada-transcription-bucket';
-const storage = new Storage();
 const path = require('path');
 
-async function uploadFileToGCS(filepath, extension) {
+async function uploadFileToGCS(storage, filepath, extension) {
   const filename = path.basename(filepath);
   const destination = `${filename}${extension}`;
   await storage.bucket(bucketName).upload(filepath, {
@@ -24,6 +23,11 @@ async function uploadFileToGCS(filepath, extension) {
 module.exports = async (req, res) => {
   const form = new formidable.IncomingForm();
   const maxInlineDuration = 6; 
+
+  console.log('Inside module.exports');
+  const storage = new Storage({
+    credentials: JSON.parse(Buffer.from(process.env.GOOGLE_APPLICATION_CREDENTIALS_BASE64, 'base64').toString('ascii'))
+  });
   
   form.parse(req, async (err, fields, files) => {
     if (err) {
@@ -56,7 +60,7 @@ module.exports = async (req, res) => {
       const audioBytes = fs.readFileSync(file).toString('base64');
       audio = { content: audioBytes };
     } else {
-      const gcsUri = await uploadFileToGCS(file, extension);
+      const gcsUri = await uploadFileToGCS(storage, file, extension);
       console.log(`Uploaded file to GCS: ${gcsUri}`);
       audio = { uri: gcsUri };
     }
