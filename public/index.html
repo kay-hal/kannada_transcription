@@ -34,7 +34,7 @@
             const transcriptionElement = document.getElementById('transcription');
             transcriptionElement.textContent = 'Transcribing...';
             try {
-                const response = await fetch('/api/chunk_upload', { // Change this line
+                const response = await fetch('/api/upload', {
                     method: 'POST',
                     body: formData,
                 });
