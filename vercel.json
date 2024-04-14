@@ -1,6 +1,5 @@
 {
     "version": 2,
-    "files": ["bin"],
     "routes": [
       {
         "src": "/api/upload",
