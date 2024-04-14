@@ -34,12 +34,21 @@
             const transcriptionElement = document.getElementById('transcription');
             transcriptionElement.textContent = 'Transcribing...';
             try {
-                const response = await fetch('/api/upload', {
+                const uploadResponse = await fetch('/api/upload', {
                     method: 'POST',
                     body: formData,
                 });
-                const result = await response.json();
-                transcriptionElement.textContent = result.transcription ;
+                const { id } = await uploadResponse.json();
+                let transcription = '';
+                while (!transcription) {
+                    const response = await fetch(`/api/getTranscription?id=${id}`);
+                    const result = await response.json();
+                    transcription = result.transcription;
+                    if (!transcription) {
+                        await new Promise(resolve => setTimeout(resolve, 5000)); // Wait for 5 seconds
+                    }
+                }
+                transcriptionElement.textContent = transcription;
             } catch (error) {
                 transcriptionElement.textContent = 'Error transcribing audio';
             }

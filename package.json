@@ -19,6 +19,7 @@
     "multer": "^1.4.5-lts.1",
     "music-metadata": "^7.14.0",
     "tempy": "^3.1.0",
-    "tmp": "^0.2.3"
+    "tmp": "^0.2.3",
+    "@vercel/storage": "^1.0.0"
   }
 }

@@ -1,17 +1,25 @@
 {
     "version": 2,
     "routes": [
-      {
-        "src": "/api/upload",
-        "dest": "/api/upload.js"
-      },
-      {
-        "src": "/api/chunk_upload",
-        "dest": "/api/chunk_upload.js"
-      },
-      {
-        "src": "/(.*)",
-        "dest": "/public/$1"
-      }
+        {
+            "src": "/api/upload",
+            "dest": "/api/upload.js"
+        },
+        {
+            "src": "/api/transcriptionCallback",
+            "dest": "/api/transcriptionCallback.js"
+        },
+        {
+            "src": "/api/getTranscription",
+            "dest": "/api/getTranscription.js"
+        },
+        {
+            "src": "/api/chunk_upload",
+            "dest": "/api/chunk_upload.js"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "/public/$1"
+        }
     ]
 }

@@ -1,3 +1,4 @@
+const VercelKV = require('@vercel/storage');
 const speech = require('@google-cloud/speech');
 const {Storage} = require('@google-cloud/storage');
 const fs = require('fs');
@@ -23,7 +24,7 @@ async function uploadFileToGCS(storage, filepath, extension) {
 module.exports = async (req, res) => {
   const form = new formidable.IncomingForm();
   const maxInlineDuration = 6; 
-
+  
   console.log('Inside module.exports');
   const storage = new Storage({
     credentials: JSON.parse(Buffer.from(process.env.GOOGLE_APPLICATION_CREDENTIALS_BASE64, 'base64').toString('ascii'))
@@ -124,15 +125,25 @@ module.exports = async (req, res) => {
       try {
         console.log('Starting transcription');
         const [operation] = await client.longRunningRecognize(request);
+        console.log('Transcription started:', operation.name);
+        
+        // Use the operation name as the unique identifier for this request
+        const id = operation.name;
+        
+        // Don't wait for the transcription to complete
+        res.status(200).send({ id: id });
+        
+        // Poll the operation for its status until it's complete.
         const [response] = await operation.promise();
         console.log('Transcription response:', response);
-        const transcription = response.results.map(result => result.alternatives[0].transcript).join('\n');
-        console.log('Transcription:', transcription);
-        res.status(200).send({ transcription });
+        
+        // Store the transcription result
+        await VercelKV.set(id, response.results[0].alternatives[0].transcript, {namespace: 'transcriptions'});      
       } catch (error) {
-        console.error('Error transcribing audio:', error);
-        res.status(500).send('Error transcribing audio');
+        console.error('Error starting transcription:', error);
+        res.status(500).send('Error starting transcription');
       }
     }
+    
   });
 };
